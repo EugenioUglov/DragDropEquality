@@ -1,0 +1,9 @@
+{
+  "equations": [
+    {
+      "id": 1,
+      "numbers": [123, 4],
+      "operators": ["+"]
+    }
+  ]
+}
