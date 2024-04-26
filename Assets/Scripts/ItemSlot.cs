@@ -3,6 +3,7 @@ using UnityEngine.EventSystems;
 
 public class ItemSlot : MonoBehaviour, IDropHandler, IContentGetter
 {
+    // TO DO
     public enum TypeEnum
     {
         ExpressionDigit,
@@ -11,7 +12,9 @@ public class ItemSlot : MonoBehaviour, IDropHandler, IContentGetter
     }
 
     public TypeEnum Type;
-    private GameObject _elementInSlot = null;
+    //
+
+    private GameObject _lastDroppedElementToSlot = null;
 
 
     public void OnDrop(PointerEventData eventData)
@@ -20,23 +23,29 @@ public class ItemSlot : MonoBehaviour, IDropHandler, IContentGetter
 
         if (eventData.pointerDrag != null)
         {
-            _elementInSlot = eventData.pointerDrag;
+            _lastDroppedElementToSlot = eventData.pointerDrag;
 
             eventData.pointerDrag.GetComponent<RectTransform>().anchoredPosition = GetComponent<RectTransform>().anchoredPosition;
 
-            eventData.pointerDrag.GetComponent<DragDrop>().IsInSlot = true;
+            eventData.pointerDrag.GetComponent<NumberItem>().IsInSlot = true;
+            eventData.pointerDrag.GetComponent<NumberItem>().Slot = this;
         }
     }
 
     public GameObject GetItemFromSlot()
     {
-        return _elementInSlot;
+        return _lastDroppedElementToSlot;
+    }
+
+    public void OnSlotCleared()
+    {
+        _lastDroppedElementToSlot = null;
     }
 
     public string GetContent()
     {
-        if (_elementInSlot == null) return null;
+        if (_lastDroppedElementToSlot == null || _lastDroppedElementToSlot.GetComponent<NumberItem>().IsInSlot == false) return null;
 
-        return _elementInSlot.GetComponent<NumberItem>().GetContent();
+        return _lastDroppedElementToSlot.GetComponent<NumberItem>().GetContent();
     }
 }

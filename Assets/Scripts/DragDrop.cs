@@ -8,8 +8,6 @@ public class DragDrop : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
 {
     public event Action OnItemDroppedToSlot;
 
-    [HideInInspector] public bool IsInSlot = false;
-
     [SerializeField] private Canvas _canvas;
 
     private RectTransform _rectTransform;
@@ -17,12 +15,14 @@ public class DragDrop : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
     private Vector3 _beginPosition;
     private Vector3 _startAnchoredPosition;
     private Color _defaultColor;
+    private NumberItem _numberItem;
 
 
     private void Awake() 
     {
         _rectTransform = GetComponent<RectTransform>();
         _canvasGroup = GetComponent<CanvasGroup>();
+        _numberItem = GetComponent<NumberItem>();
     }
 
     private void Start() 
@@ -39,16 +39,23 @@ public class DragDrop : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
 
     public void OnBeginDrag(PointerEventData eventData)
     {
+        if (GetComponent<NumberItem>().Slot != null)
+        {
+            GetComponent<NumberItem>().Slot.OnSlotCleared();
+            GetComponent<NumberItem>().Slot = null;
+        }
+
+        
         gameObject.GetComponent<Image>().color = _defaultColor;
 
-        if (IsInSlot == false)
+        if (GetComponent<NumberItem>().IsInSlot == false)
         {
             _startAnchoredPosition = _rectTransform.anchoredPosition;
         }
         
         print(_startAnchoredPosition);
         print("OnBeginDrag");
-        IsInSlot = false;
+        GetComponent<NumberItem>().IsInSlot = false;
         _canvasGroup.alpha = .6f;
         _canvasGroup.blocksRaycasts = false;
     }
@@ -64,7 +71,7 @@ public class DragDrop : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
         _canvasGroup.alpha = 1;
         _canvasGroup.blocksRaycasts = true;
 
-        if (IsInSlot)
+        if (GetComponent<NumberItem>().IsInSlot)
         {
             OnItemDroppedToSlot?.Invoke();
             gameObject.GetComponent<Image>().color = new Color(130, 241, 144);

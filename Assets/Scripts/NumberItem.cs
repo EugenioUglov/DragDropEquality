@@ -7,6 +7,9 @@ using System;
 
 public class NumberItem : MonoBehaviour, IContentGetter
 {
+    [HideInInspector] public ItemSlot Slot = null;
+    [HideInInspector] public bool IsInSlot = false;
+
     [SerializeField] private TMP_Text _numberText;
 
 

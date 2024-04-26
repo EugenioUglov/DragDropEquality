@@ -101,12 +101,21 @@ public class EquationCreator : MonoBehaviour
         string expression = "";
         string userResultString = "";
         bool isReultDigit = false;
+            print("IsRightResult");
 
+        
         for (int i = 0; i < mathItems.Count; i++)
         {
-            if (mathItems[i].GetComponent<ItemSlot>() != null && mathItems[i].GetComponent<ItemSlot>().GetContent() == null) return false;
+            GameObject currentMathItem = mathItems[i];
 
-            string mathItemContent = mathItems[i].GetComponent<IContentGetter>().GetContent();
+            if (currentMathItem.GetComponent<ItemSlot>() != null && currentMathItem.GetComponent<ItemSlot>().GetContent() == null)
+            {
+                print(currentMathItem.GetComponent<ItemSlot>().GetContent());
+                return false;
+            }
+
+
+            string mathItemContent = currentMathItem.GetComponent<IContentGetter>().GetContent();
             
             if (mathItemContent == "=")
             {
@@ -114,8 +123,14 @@ public class EquationCreator : MonoBehaviour
                 continue;
             }
 
-            if (isReultDigit == false && mathItemContent != "=") 
+            if (isReultDigit == false) 
             {
+                print("isReultDigit == false");
+                if (currentMathItem.GetComponent<NumberItem>() != null) {
+                    print("is Number item: " + currentMathItem.GetComponent<NumberItem>().IsInSlot);
+                    if (currentMathItem.GetComponent<NumberItem>().IsInSlot == false) return false;
+                }
+
                 expression += mathItemContent;
             }
 
